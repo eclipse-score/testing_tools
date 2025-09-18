@@ -261,8 +261,8 @@ class BazelTools(BuildTools):
         ----------
         option_prefix : str
             Prefix for options expected by 'select_target_path'.
-            - '' will expect '--target-name'.
-            - 'cpp' will expect and '--cpp-target-name'.
+            - '' will expect '--target-path' and '--target-name'.
+            - 'cpp' will expect '--cpp-target-path' and '--cpp-target-name'.
         command_timeout : float
             Common command timeout in seconds.
         build_timeout : float
@@ -270,8 +270,10 @@ class BazelTools(BuildTools):
         """
         super().__init__(command_timeout, build_timeout)
         if option_prefix:
+            self._target_path_flag = f"--{option_prefix}-target-path"
             self._target_name_flag = f"--{option_prefix}-target-name"
         else:
+            self._target_path_flag = "--target-path"
             self._target_name_flag = "--target-name"
 
     def query(self, query: str = "//...") -> list[str]:
@@ -340,6 +342,9 @@ class BazelTools(BuildTools):
     def select_target_path(self, config: Config, expect_exists: bool) -> Path:
         """
         Select executable path based on "--target-name" option.
+        - if "--target-path" is set - use it
+        - if "--target-path" not set - search for an executable named "--target-name"
+        - if "--target-name" not set - error
 
         Parameters
         ----------
@@ -348,6 +353,16 @@ class BazelTools(BuildTools):
         expect_exists : bool
             Check that executable exists.
         """
+        # Types are ignored due to 'default' being incorrectly set to 'notset' type.
+        if option_target_path := config.getoption(self._target_path_flag, default=None):  # type: ignore
+            # Check path is valid.
+            if not isinstance(option_target_path, Path):
+                raise UsageError(f"Invalid executable path type: {type(option_target_path)}")
+            if expect_exists and not option_target_path.is_file():
+                raise UsageError(f"Invalid executable path: {option_target_path}")
+
+            return option_target_path
+
         if option_target_name := config.getoption(self._target_name_flag, default=None):  # type: ignore
             # Check name type is valid.
             if not isinstance(option_target_name, str):
@@ -361,7 +376,7 @@ class BazelTools(BuildTools):
             except Exception as e:
                 raise UsageError from e
 
-        raise UsageError(f'"{self._target_name_flag}" must be set')
+        raise UsageError(f'Either "{self._target_path_flag}" or "{self._target_name_flag}" must be set')
 
     def build(self, target_name: str) -> Path:
         """
