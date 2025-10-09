@@ -44,13 +44,13 @@ class TestInit:
         # Make sure internal storage is always list.
         lc = LogContainer()
         assert len(lc) == 0
-        assert isinstance(lc._logs, list)
+        assert isinstance(lc._logs, list)  # noqa: SLF001
 
     def test_explicit_none(self):
         # Make sure internal storage is always list.
         lc = LogContainer(None)
         assert len(lc) == 0
-        assert isinstance(lc._logs, list)
+        assert isinstance(lc._logs, list)  # noqa: SLF001
 
     def test_default_param_not_referenced(self):
         lc1 = LogContainer()
@@ -79,15 +79,13 @@ class TestIterNext:
     """
 
     def test_iterator_ok(self, lc_basic: LogContainer):
-        i = 0
-        for log in lc_basic:
+        for i, log in enumerate(lc_basic):
             assert log.index == i
-            i += 1
 
     def test_iterator_empty(self):
         lc = LogContainer()
         for _ in lc:
-            assert False, "Statement shouldn't be reached"
+            raise RuntimeError("Statement shouldn't be reached")
 
     def test_list_ok(self, lc_basic: LogContainer):
         logs = list(lc_basic)
@@ -627,7 +625,7 @@ class TestFindLog:
                 ResultEntry({"level": "WARN"}),
             ]
         )
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError):  # noqa: PT011
             _ = lc.find_log("level", pattern=r"WARN|INFO")
 
     def test_pattern_cast_type(self):

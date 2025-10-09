@@ -28,7 +28,7 @@ class Address:
     port: int
 
     @classmethod
-    def from_raw(cls, *address: tuple[int | bytes | str, int]) -> "Address":
+    def from_raw(cls, *address) -> "Address":
         """
         Convert address in tuple format to 'Address' object.
 
@@ -67,15 +67,13 @@ class Address:
         """
         if isinstance(self.ip, IPv4Address):
             return AF_INET
-        elif isinstance(self.ip, IPv6Address):
+        if isinstance(self.ip, IPv6Address):
             return AF_INET6
-        else:
-            raise RuntimeError("Unsupported address family")
+        raise RuntimeError("Unsupported address family")
 
     def __str__(self) -> str:
         if self.family() == AF_INET:
             return f"{self.ip}:{self.port}"
-        elif self.family() == AF_INET6:
+        if self.family() == AF_INET6:
             return f"[{self.ip}]:{self.port}"
-        else:
-            raise RuntimeError("Unsupported address family")
+        raise RuntimeError("Unsupported address family")

@@ -16,11 +16,12 @@ Tests for "build_tools" module.
 
 import os
 from abc import ABC, abstractmethod
+from collections.abc import Generator
 from contextlib import contextmanager
 from pathlib import Path
 from subprocess import Popen, TimeoutExpired
 from textwrap import dedent
-from typing import Any, Generator
+from typing import Any
 
 import pytest
 
@@ -42,7 +43,7 @@ def cwd(new_cwd: Path | str) -> Generator[None, None, None]:
     new_cwd : Path
         Directory to set as CWD.
     """
-    prev_cwd = os.getcwd()
+    prev_cwd = Path.cwd()
     os.chdir(new_cwd)
     yield
     os.chdir(prev_cwd)
@@ -67,7 +68,7 @@ class MockConfig:
     def getoption(self, name: str, default: Any = notset) -> Any:
         value = self._options.get(name, default)
         if value is notset:
-            raise ValueError()
+            raise ValueError
         return value
 
 
@@ -139,31 +140,35 @@ class TestBuildTools(ABC):
 
         def test_metadata_timeout(self, tools_type: type[BuildTools], tmp_project: tuple[str, Path]) -> None:
             target_name, path = tmp_project
-            with cwd(path), pytest.raises(TimeoutExpired):
+            with cwd(path):
                 command_timeout = 0.00000001
                 tools = tools_type(command_timeout=command_timeout)
-                _ = tools.build(target_name)
+                with pytest.raises(TimeoutExpired):
+                    _ = tools.build(target_name)
 
         def test_build_timeout(self, tools_type: type[BuildTools], tmp_project: tuple[str, Path]) -> None:
             target_name, path = tmp_project
-            with cwd(path), pytest.raises(TimeoutExpired):
+            with cwd(path):
                 build_timeout = 0.00000001
                 tools = tools_type(build_timeout=build_timeout)
-                _ = tools.build(target_name)
+                with pytest.raises(TimeoutExpired):
+                    _ = tools.build(target_name)
 
         def test_invalid_target_name(self, tools_type: type[BuildTools], tmp_project: tuple[str, Path]) -> None:
             _, path = tmp_project
-            with cwd(path), pytest.raises(RuntimeError):
+            with cwd(path):
                 invalid_target_name = "xyz"
                 tools = tools_type()
-                _ = tools.build(invalid_target_name)
+                with pytest.raises(RuntimeError):
+                    _ = tools.build(invalid_target_name)
 
         def test_invalid_cwd(self, tools_type: type[BuildTools], tmp_project: tuple[str, Path]) -> None:
             target_name, _ = tmp_project
             invalid_project_path = "/tmp"
-            with cwd(invalid_project_path), pytest.raises(RuntimeError):
+            with cwd(invalid_project_path):
                 tools = tools_type()
-                _ = tools.build(target_name)
+                with pytest.raises(RuntimeError):
+                    _ = tools.build(target_name)
 
     class TestFindBinPath:
         def test_ok(
@@ -179,24 +184,27 @@ class TestBuildTools(ABC):
 
         def test_timeout(self, tools_type: type[BuildTools], built_tmp_project: tuple[str, Path]) -> None:
             target_name, path = built_tmp_project
-            with cwd(path), pytest.raises(TimeoutExpired):
+            with cwd(path):
                 command_timeout = 0.00000001
                 tools = tools_type(command_timeout=command_timeout)
-                _ = tools.find_target_path(target_name, expect_exists=True)
+                with pytest.raises(TimeoutExpired):
+                    _ = tools.find_target_path(target_name, expect_exists=True)
 
         def test_invalid_target_name(self, tools_type: type[BuildTools], built_tmp_project: tuple[str, Path]) -> None:
             _, path = built_tmp_project
-            with cwd(path), pytest.raises(RuntimeError):
+            with cwd(path):
                 invalid_target_name = "invalid_target_name"
                 tools = tools_type()
-                _ = tools.find_target_path(invalid_target_name, expect_exists=True)
+                with pytest.raises(RuntimeError):
+                    _ = tools.find_target_path(invalid_target_name, expect_exists=True)
 
         def test_invalid_cwd(self, tools_type: type[BuildTools], built_tmp_project: tuple[str, Path]) -> None:
             target_name, _ = built_tmp_project
             invalid_project_path = "/tmp"
-            with cwd(invalid_project_path), pytest.raises(RuntimeError):
+            with cwd(invalid_project_path):
                 tools = tools_type()
-                _ = tools.find_target_path(target_name, expect_exists=True)
+                with pytest.raises(RuntimeError):
+                    _ = tools.find_target_path(target_name, expect_exists=True)
 
         def test_not_expect_exists(
             self, tools_type: type[BuildTools], tmp_project: tuple[str, Path], expected_target_path: Path
@@ -253,10 +261,11 @@ class TestCargoTools(TestBuildTools):
 
         def test_timeout(self, tmp_project: tuple[str, Path]) -> None:
             _, path = tmp_project
-            with cwd(path), pytest.raises(TimeoutExpired):
+            with cwd(path):
                 timeout = 0.00000001
                 tools = CargoTools(command_timeout=timeout)
-                _ = tools.metadata()
+                with pytest.raises(TimeoutExpired):
+                    _ = tools.metadata()
 
     class TestSelectBinPath:
         def test_target_path_set_ok(self, built_tmp_project: tuple[str, Path]) -> None:
@@ -277,7 +286,7 @@ class TestCargoTools(TestBuildTools):
 
         def test_target_path_set_invalid_type(self, built_tmp_project: tuple[str, Path]) -> None:
             target_name, path = built_tmp_project
-            with cwd(path), pytest.raises(pytest.UsageError):
+            with cwd(path):
                 tools = CargoTools()
                 # Find executable path.
                 exp_target_path = tools.find_target_path(target_name, expect_exists=True)
@@ -286,18 +295,20 @@ class TestCargoTools(TestBuildTools):
                 cfg = MockConfig({"--target-path": str(exp_target_path)})
 
                 # Run.
-                _ = tools.select_target_path(cfg, expect_exists=True)  # type: ignore
+                with pytest.raises(pytest.UsageError):
+                    _ = tools.select_target_path(cfg, expect_exists=True)  # type: ignore
 
         def test_target_path_set_invalid_value(self, built_tmp_project: tuple[str, Path]) -> None:
             _, path = built_tmp_project
-            with cwd(path), pytest.raises(pytest.UsageError):
+            with cwd(path):
                 tools = CargoTools()
                 # Create mock.
                 invalid_target_path = Path("/invalid/path")
                 cfg = MockConfig({"--target-path": invalid_target_path})
 
                 # Run.
-                _ = tools.select_target_path(cfg, expect_exists=True)  # type: ignore
+                with pytest.raises(pytest.UsageError):
+                    _ = tools.select_target_path(cfg, expect_exists=True)  # type: ignore
 
         def test_target_path_not_expect_exists(self, tmp_project: tuple[str, Path]) -> None:
             target_name, path = tmp_project
@@ -333,24 +344,26 @@ class TestCargoTools(TestBuildTools):
 
         def test_target_name_set_invalid_type(self, built_tmp_project: tuple[str, Path]) -> None:
             target_name, path = built_tmp_project
-            with cwd(path), pytest.raises(pytest.UsageError):
+            with cwd(path):
                 tools = CargoTools()
                 # Create mock.
                 cfg = MockConfig({"--target-name": Path(target_name)})
 
                 # Run.
-                _ = tools.select_target_path(cfg, expect_exists=True)  # type: ignore
+                with pytest.raises(pytest.UsageError):
+                    _ = tools.select_target_path(cfg, expect_exists=True)  # type: ignore
 
         def test_target_name_set_invalid_value(self, built_tmp_project: tuple[str, Path]) -> None:
             _, path = built_tmp_project
-            with cwd(path), pytest.raises(pytest.UsageError):
+            with cwd(path):
                 tools = CargoTools()
                 # Create mock.
                 invalid_target_name = "invalid_target_name"
                 cfg = MockConfig({"--target-name": invalid_target_name})
 
                 # Run.
-                _ = tools.select_target_path(cfg, expect_exists=True)  # type: ignore
+                with pytest.raises(pytest.UsageError):
+                    _ = tools.select_target_path(cfg, expect_exists=True)  # type: ignore
 
         def test_target_name_not_expect_exists(self, tmp_project: tuple[str, Path]) -> None:
             target_name, path = tmp_project
@@ -370,24 +383,26 @@ class TestCargoTools(TestBuildTools):
 
         def test_target_name_timeout(self, built_tmp_project: tuple[str, Path]) -> None:
             target_name, path = built_tmp_project
-            with cwd(path), pytest.raises(TimeoutExpired):
+            with cwd(path):
                 command_timeout = 0.00000001
                 tools = CargoTools(command_timeout=command_timeout)
                 # Create mock.
                 cfg = MockConfig({"--target-name": target_name})
 
                 # Run.
-                _ = tools.select_target_path(cfg, expect_exists=True)  # type: ignore
+                with pytest.raises(TimeoutExpired):
+                    _ = tools.select_target_path(cfg, expect_exists=True)  # type: ignore
 
         def test_params_unset(self, built_tmp_project: tuple[str, Path]) -> None:
             _, path = built_tmp_project
-            with cwd(path), pytest.raises(pytest.UsageError):
+            with cwd(path):
                 tools = CargoTools()
                 # Create mock.
                 cfg = MockConfig({})
 
                 # Run.
-                _ = tools.select_target_path(cfg, expect_exists=True)  # type: ignore
+                with pytest.raises(pytest.UsageError):
+                    _ = tools.select_target_path(cfg, expect_exists=True)  # type: ignore
 
 
 class TestBazelTools(TestBuildTools):
@@ -457,4 +472,4 @@ class TestBazelTools(TestBuildTools):
         target_name, project_path = tmp_project
         return project_path / "bazel-out" / "k8-fastbuild" / "bin" / target_name
 
-    # TODO: add query tests.
+    # TODO: add query tests.  # noqa: FIX002

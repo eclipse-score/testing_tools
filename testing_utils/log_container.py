@@ -63,7 +63,7 @@ class LogContainer:
             result = self._logs[self._index]
             self._index += 1
             return result
-        raise StopIteration()
+        raise StopIteration
 
     def __len__(self):
         """
@@ -77,7 +77,7 @@ class LogContainer:
         """
         return self._logs[subscript]
 
-    def _logs_by_field_field_only(self, field: str, reverse: bool) -> list[ResultEntry]:
+    def _logs_by_field_field_only(self, field: str, *, reverse: bool) -> list[ResultEntry]:
         """
         Filter logs using field only.
 
@@ -100,7 +100,7 @@ class LogContainer:
                 logs.append(log)
         return logs
 
-    def _logs_by_field_regex_match(self, field: str, reverse: bool, pattern: str) -> list[ResultEntry]:
+    def _logs_by_field_regex_match(self, field: str, pattern: str, *, reverse: bool) -> list[ResultEntry]:
         """
         Filter logs using regex matching.
         Underlying field value is casted to str.
@@ -133,7 +133,7 @@ class LogContainer:
                 logs.append(log)
         return logs
 
-    def _logs_by_field_exact_match(self, field: str, reverse: bool, value: Any) -> list[ResultEntry]:
+    def _logs_by_field_exact_match(self, field: str, value: Any, *, reverse: bool) -> list[ResultEntry]:
         """
         Filter logs using exact matching.
 
@@ -162,7 +162,7 @@ class LogContainer:
         return logs
 
     def _logs_by_field(
-        self, field: str, reverse: bool, *, pattern: str | _NotSet = _not_set, value: Any | _NotSet = _not_set
+        self, field: str, *, reverse: bool, pattern: str | _NotSet = _not_set, value: Any | _NotSet = _not_set
     ) -> list[ResultEntry]:
         """
         Select filtration method and filter logs.
@@ -185,13 +185,12 @@ class LogContainer:
         value_set = not isinstance(value, _NotSet)
 
         if pattern_set and not value_set:
-            return self._logs_by_field_regex_match(field, reverse, pattern)
-        elif not pattern_set and value_set:
-            return self._logs_by_field_exact_match(field, reverse, value)
-        elif not pattern_set and not value_set:
-            return self._logs_by_field_field_only(field, reverse)
-        else:
-            raise RuntimeError("Pattern and value parameters are mutually exclusive")
+            return self._logs_by_field_regex_match(field, pattern, reverse=reverse)
+        if not pattern_set and value_set:
+            return self._logs_by_field_exact_match(field, value, reverse=reverse)
+        if not pattern_set and not value_set:
+            return self._logs_by_field_field_only(field, reverse=reverse)
+        raise RuntimeError("Pattern and value parameters are mutually exclusive")
 
     def contains_log(self, field: str, *, pattern: str | _NotSet = _not_set, value: Any | _NotSet = _not_set) -> bool:
         """

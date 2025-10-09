@@ -107,11 +107,11 @@ def pytest_addoption(parser):
 Usage:
 
 ```python
+import pytest
 from pathlib import Path
-from pytest import FeatureRequest
 from testing_utils import BazelTools
 
-def test_example(request: FeatureRequest) -> None:
+def test_example(request: pytest.FeatureRequest) -> None:
     build_tools = BazelTools()
     target_path: Path = build_tools.select_target_path(request.config)
     ...
