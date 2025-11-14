@@ -12,23 +12,21 @@
 // *******************************************************************************
 use crate::monotonic_clock::MonotonicClock;
 use crate::test_context::TestContext;
-use std::sync::Once;
 use tracing::Level;
+use tracing_subscriber::fmt::format::{Format, JsonFields};
 use tracing_subscriber::FmtSubscriber;
 
-/// Tracing subscriber should be initialized only once.
-static TRACING_SUBSCRIBER_INIT: Once = Once::new();
-
-fn init_tracing_subscriber() {
-    let subscriber = FmtSubscriber::builder()
+/// Create a tracing subscriber that outputs logs in JSON format with monotonic timestamps.
+/// # Returns
+/// configured `FmtSubscriber`.
+pub fn create_tracing_subscriber(
+) -> FmtSubscriber<JsonFields, Format<tracing_subscriber::fmt::format::Json, MonotonicClock>> {
+    FmtSubscriber::builder()
         .with_max_level(Level::TRACE)
         .with_thread_ids(true)
         .with_timer(MonotonicClock::new())
         .json()
-        .finish();
-
-    tracing::subscriber::set_global_default(subscriber)
-        .expect("Setting default subscriber failed!");
+        .finish()
 }
 
 /// Test scenario arguments.
@@ -153,11 +151,6 @@ pub fn run_cli_app(raw_arguments: &[String], test_context: &TestContext) -> Resu
         Some(input) => input,
         None => return Err("Test scenario input must be provided".to_string()),
     };
-
-    // Initialize tracing subscriber.
-    TRACING_SUBSCRIBER_INIT.call_once(|| {
-        init_tracing_subscriber();
-    });
 
     test_context.run(&scenario_name, &scenario_input)
 }

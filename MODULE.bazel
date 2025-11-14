@@ -16,19 +16,19 @@
 
 module(
     name = "score_test_scenarios",
-    version = "0.3.0",
+    version = "0.3.1",
     compatibility_level = 0,
 )
 
 # Starlark language server
-bazel_dep(name = "score_starpls_lsp", version = "0.1.0")
+bazel_dep(name = "score_starpls_lsp", version = "0.1.0", dev_dependency = True)
 
 # Python rules.
-bazel_dep(name = "rules_python", version = "1.0.0")
+bazel_dep(name = "rules_python", version = "1.0.0", dev_dependency = True)
 
 PYTHON_VERSION = "3.12"
 
-python = use_extension("@rules_python//python/extensions:python.bzl", "python")
+python = use_extension("@rules_python//python/extensions:python.bzl", "python", dev_dependency = True)
 python.toolchain(
     is_default = True,
     python_version = PYTHON_VERSION,
@@ -36,13 +36,13 @@ python.toolchain(
 use_repo(python)
 
 # C++ GoogleTest dependencies.
-bazel_dep(name = "googletest", version = "1.14.0")
+bazel_dep(name = "googletest", version = "1.14.0", dev_dependency = True)
 
 # Rust rules.
 bazel_dep(name = "rules_rust", version = "0.56.0")
 
 # C/C++ rules.
-bazel_dep(name = "rules_cc", version = "0.1.1")
+bazel_dep(name = "rules_cc", version = "0.1.1", dev_dependency = True)
 
 # Rust module dependencies.
 rust = use_extension("@rules_rust//rust:extensions.bzl", "rust")
@@ -51,15 +51,8 @@ rust.toolchain(
     versions = ["1.85.0"],
 )
 
-crate = use_extension("@rules_rust//crate_universe:extensions.bzl", "crate")
-crate.from_cargo(
-    name = "test_scenarios_rust_crates",
-    cargo_lockfile = "//test_scenarios_rust:Cargo.lock",
-    manifests = [
-        "//test_scenarios_rust:Cargo.toml",
-    ],
-)
-use_repo(crate, "test_scenarios_rust_crates")
-
 # C++ base libs.
-bazel_dep(name = "score_baselibs", version = "0.1.2")
+bazel_dep(name = "score_baselibs", version = "0.1.2", dev_dependency = True)
+
+# Score Rust crates.
+bazel_dep(name = "score_crates", version = "0.0.4")
