@@ -18,21 +18,15 @@ setup_starpls(
     visibility = ["//visibility:public"],
 )
 
-# In order to update the requirements, change the `requirements.txt` file and run:
-# `bazel run //:requirements.update`.
-# This will update the `requirements.txt.lock` file.
-# `@score_tooling//python_basics:requirements.txt` is merged in as a
-# constraints source so pytest resolves to the same exact version pinned by
-# score_tooling, instead of this repo's own floor (`pyproject.toml`) floating
-# independently. Note: bumping score_tooling's version above may rename this
-# exported file (it moved to per-Python-version files, e.g.
-# `requirements_3_12.txt`, by score_tooling 1.3.x) — this src must be updated
-# to match in the same change, or `requirements.update` fails to analyze.
+# To update: bazel run //:requirements.update
 compile_pip_requirements(
     name = "requirements",
     srcs = [
         "requirements.txt",
         "@score_tooling//python_basics:requirements.txt",
+    ],
+    extra_args = [
+        "--no-annotate",
     ],
     requirements_txt = "requirements.txt.lock",
     tags = ["manual"],

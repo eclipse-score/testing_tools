@@ -47,6 +47,9 @@ jobs:
         with:
           bazelisk-version: 1.26.0 # newest LTS before 1 Jun 2025
 
+      - name: Check pip lock is up to date with score_tooling
+        run: bazel test //:requirements_test
+
       - name: Install Rust (Cargo)
         uses: actions-rs/toolchain@v1
         with:
