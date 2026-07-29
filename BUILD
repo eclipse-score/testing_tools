@@ -23,6 +23,8 @@ compile_pip_requirements(
     name = "requirements",
     srcs = [
         "requirements.txt",
+    ],
+    constraints = [
         "@score_tooling//python_basics:requirements.txt",
     ],
     extra_args = [
