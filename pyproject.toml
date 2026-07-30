@@ -18,6 +18,9 @@ build-backend = "setuptools.build_meta"
 [tool.setuptools]
 packages = ["testing_utils", "testing_utils.net"]
 
+[tool.pytest.ini_options]
+pythonpath = ["."]
+
 [project.optional-dependencies]
 dev = ["ruff"]
 
