@@ -27,10 +27,12 @@ compile_pip_requirements(
     constraints = [
         "@score_tooling//python_basics:requirements.txt",
     ],
-    # pip-compile builds this package's metadata to read [project.dependencies],
-    # so the setuptools backend needs the `readme` file and the packages listed
-    # in [tool.setuptools] to be present in the sandbox.
-    data = ["README.md"] + glob(["testing_utils/**/*.py"]),
+    # pip-compile builds this package's metadata to read [project.dependencies];
+    # the setuptools backend needs the packages listed in [tool.setuptools] to
+    # be present in the sandbox to do that (verified: the readme file is not
+    # actually required for metadata-only resolution, despite being a required
+    # key in [project] -- only building an actual sdist/wheel would need it).
+    data = glob(["testing_utils/**/*.py"]),
     extra_args = [
         "--no-annotate",
         # include [project.optional-dependencies].dev (ruff) so the lint and
@@ -39,4 +41,8 @@ compile_pip_requirements(
     ],
     requirements_txt = "requirements.txt.lock",
     tags = ["manual"],
+    # building this package's metadata from pyproject.toml adds real time on
+    # top of dependency resolution; the rule's default "short" (60s) timeout
+    # has been observed to trip under load.
+    timeout = "moderate",
 )
