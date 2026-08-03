@@ -47,8 +47,6 @@ jobs:
         with:
           bazelisk-version: 1.26.0 # newest LTS before 1 Jun 2025
 
-      # `requirements_test`, not `requirements.test`: rules_python only renamed the
-      # target in 1.5.0, and this module tracks score_tooling's 1.4.1.
       - name: Check pip lock is up to date with score_tooling
         run: bazel test //:requirements_test
 
