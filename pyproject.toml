@@ -21,6 +21,13 @@ packages = ["testing_utils", "testing_utils.net"]
 [project.optional-dependencies]
 dev = ["ruff"]
 
+[tool.pytest.ini_options]
+# Import testing_utils from the source tree, so this repo's own test run needs
+# nothing installed beyond the resolved lock -- no separate install of this
+# package on top of it.
+pythonpath = ["."]
+testpaths = ["tests"]
+
 [tool.ruff]
 # Exclude a variety of commonly ignored directories.
 exclude = [
