@@ -18,31 +18,18 @@ setup_starpls(
     visibility = ["//visibility:public"],
 )
 
-# Resolves [project.dependencies] from pyproject.toml (the default src) against
-# score_tooling's pins as constraints, so a score_tooling bump is picked up by
-# re-running the update -- no version edit here.
 # To update: bazel run //:requirements.update
 compile_pip_requirements(
     name = "requirements",
     constraints = [
         "@score_tooling//python_basics:requirements.txt",
     ],
-    # pip-compile builds this package's metadata to read [project.dependencies];
-    # the setuptools backend needs the packages listed in [tool.setuptools] to
-    # be present in the sandbox to do that (verified: the readme file is not
-    # actually required for metadata-only resolution, despite being a required
-    # key in [project] -- only building an actual sdist/wheel would need it).
-    data = glob(["testing_utils/**/*.py"]),
+    data = glob(["testing_utils/**/*.py"]),  # needed to build metadata from pyproject.toml
     extra_args = [
         "--no-annotate",
-        # include [project.optional-dependencies].dev (ruff) so the lint and
-        # test jobs install from this one lock
-        "--extra=dev",
+        "--extra=dev",  # so ruff resolves from this lock too
     ],
     requirements_txt = "requirements.txt.lock",
     tags = ["manual"],
-    # building this package's metadata from pyproject.toml adds real time on
-    # top of dependency resolution; the rule's default "short" (60s) timeout
-    # has been observed to trip under load.
-    timeout = "moderate",
+    timeout = "moderate",  # metadata build exceeds the rule's default "short"
 )

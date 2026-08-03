@@ -65,10 +65,8 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          # requirements.txt.lock is the only source of dependencies; the second
-          # command installs the package under test itself and adds none
-          # (pip refuses an editable requirement while hash-checking).
           pip install -r requirements.txt.lock
+          # can't combine with the line above: pip blocks local installs under hash-checking
           pip install -e . --no-deps
 
       - name: Run tests with pytest
