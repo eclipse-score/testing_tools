@@ -10,24 +10,8 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
-load("@rules_python//python:pip.bzl", "compile_pip_requirements")
-load("@score_tooling//:defs.bzl", "setup_starpls")
 
-setup_starpls(
-    name = "starpls_server",
-    visibility = ["//visibility:public"],
-)
-
-# To update: bazel run //:requirements.update
-compile_pip_requirements(
-    name = "requirements",
-    srcs = [
-        "requirements.txt",
-        "@score_tooling//python_basics:requirements.txt",
-    ],
-    extra_args = [
-        "--no-annotate",
-    ],
-    requirements_txt = "requirements.txt.lock",
-    tags = ["manual"],
-)
+pytest
+pytest-html
+pytest-repeat
+ruff
