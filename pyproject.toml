@@ -21,7 +21,7 @@ packages = ["testing_utils", "testing_utils.net"]
 [project.optional-dependencies]
 dev = ["ruff"]
 
-[tool.pytest.ini_options]
+[tool.pytest]
 pythonpath = ["."]
 testpaths = ["tests"]
 
