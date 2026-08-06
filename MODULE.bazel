@@ -82,7 +82,6 @@ python.toolchain(
     is_default = True,
     python_version = PYTHON_VERSION,
 )
-use_repo(python)
 
 # C++ GoogleTest dependencies.
 bazel_dep(name = "googletest", version = "1.17.0", dev_dependency = True)
