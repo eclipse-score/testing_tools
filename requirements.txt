@@ -11,7 +11,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
 
-pytest
-pytest-html
-pytest-repeat
+pytest~=9.0.1
+pytest-html~=4.1.1
+pytest-repeat~=0.9.4
 ruff
