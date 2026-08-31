@@ -91,4 +91,4 @@ bazel_dep(name = "googletest", version = "1.17.0", dev_dependency = True)
 bazel_dep(name = "nlohmann_json", version = "3.12.0")
 
 # S-CORE crates
-bazel_dep(name = "score_crates", version = "0.0.7")
+bazel_dep(name = "score_crates", version = "0.0.12")
