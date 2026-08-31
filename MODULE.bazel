@@ -32,7 +32,7 @@ bazel_dep(name = "score_rust_policies", version = "0.0.5")
 # Toolchains and extensions
 bazel_dep(name = "rules_rust", version = "0.68.1-score")
 
-bazel_dep(name = "score_bazel_cpp_toolchains", version = "0.5.1", dev_dependency = True)
+bazel_dep(name = "score_bazel_cpp_toolchains", version = "1.0.3", dev_dependency = True)
 bazel_dep(name = "score_toolchains_rust", version = "0.8.0", dev_dependency = True)
 
 # Others
