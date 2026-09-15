@@ -10,14 +10,24 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
+# Local copy of the @score_cpp_policies//clang_tidy baseline. clang-tidy only
+# discovers a .clang-tidy by walking up from the file it's linting, so a config
+# living inside an external repo (score_cpp_policies) is never found -- this
+# file has to live at our own root for the baseline checks to actually run.
+Checks: >-
+  -*,
+  clang-analyzer-*,
+  cert-*,
+  cppcoreguidelines-*,
+  bugprone-*,
+  misc-*,
+  performance-*,
+  readability-*,
+  modernize-*
 
-"""Clang-tidy aspect and test rule, using the score_cpp_policies baseline."""
+WarningsAsErrors: >-
+  clang-analyzer-*
 
-load("@score_cpp_policies//clang_tidy:defs.bzl", "make_clang_tidy_aspect", "make_clang_tidy_test")
+HeaderFilterRegex: 'score/'
 
-clang_tidy_aspect = make_clang_tidy_aspect(
-    binary = Label("@llvm_toolchain//:clang-tidy"),
-    local_configs = [Label("//:.clang-tidy")],
-)
-
-clang_tidy_test = make_clang_tidy_test(aspect = clang_tidy_aspect)
+FormatStyle: none

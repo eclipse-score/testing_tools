@@ -13,6 +13,8 @@
 load("@rules_python//python:pip.bzl", "compile_pip_requirements")
 load("@score_tooling//:defs.bzl", "setup_starpls")
 
+exports_files([".clang-tidy"])
+
 setup_starpls(
     name = "starpls_server",
     visibility = ["//visibility:public"],
