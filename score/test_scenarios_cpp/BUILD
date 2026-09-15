@@ -56,10 +56,8 @@ cc_test(
 
 clang_tidy_test(
     name = "clang_tidy",
-    # :tests (cc_test) isn't covered by the aspect's default rule_kinds.
     srcs = [
         ":test_scenarios_cpp",
     ],
-    # manual: needs the llvm toolchain, which --config=clang-tidy registers.
     tags = ["manual"],
 )

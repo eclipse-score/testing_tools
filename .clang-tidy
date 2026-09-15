@@ -10,10 +10,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
-# Local copy of the @score_cpp_policies//clang_tidy baseline. clang-tidy only
-# discovers a .clang-tidy by walking up from the file it's linting, so a config
-# living inside an external repo (score_cpp_policies) is never found -- this
-# file has to live at our own root for the baseline checks to actually run.
 Checks: >-
   -*,
   clang-analyzer-*,

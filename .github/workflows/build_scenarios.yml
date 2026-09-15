@@ -45,7 +45,7 @@ jobs:
       - name: Setup Bazel
         uses: bazel-contrib/setup-bazel@0.15.0
         with:
-          bazelisk-version: 1.26.0 # newest LTS before 1 Jun 2025
+          bazelisk-version: 1.26.0
 
       - name: Run clang-tidy
         run: |
