@@ -24,6 +24,6 @@ Checks: >-
 WarningsAsErrors: >-
   clang-analyzer-*
 
-HeaderFilterRegex: 'score/'
+HeaderFilterRegex: 'score/test_scenarios_cpp/'
 
 FormatStyle: none
