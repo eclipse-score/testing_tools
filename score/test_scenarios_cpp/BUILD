@@ -10,6 +10,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
+load("@rules_cc//cc:cc_binary.bzl", "cc_binary")
 load("@rules_cc//cc:cc_library.bzl", "cc_library")
 load("@rules_cc//cc:cc_test.bzl", "cc_test")
 load("//tools/lint:linters.bzl", "clang_tidy_test")
@@ -37,6 +38,16 @@ cc_library(
     includes = ["include/"],
     visibility = ["//visibility:public"],
     deps = ["@nlohmann_json//:json"],
+)
+
+cc_binary(
+    name = "basic",
+    srcs = ["examples/basic.cpp"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":test_scenarios_cpp",
+        "@nlohmann_json//:json",
+    ],
 )
 
 cc_test(

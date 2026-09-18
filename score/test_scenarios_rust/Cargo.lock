@@ -146,6 +146,8 @@ dependencies = [
 name = "test_scenarios_rust"
 version = "0.3.1"
 dependencies = [
+ "serde",
+ "serde_json",
  "tracing",
  "tracing-subscriber",
 ]
