@@ -15,10 +15,12 @@ name: Format and Internal Tests of Utils
 on:
   pull_request:
     types: [opened, reopened, synchronize]
+  push:
+    branches: [main]
 
 jobs:
   lint:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -37,15 +39,21 @@ jobs:
         run: ruff check . --exclude scripts/internal
 
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Setup Bazel
-        uses: bazel-contrib/setup-bazel@0.15.0
+        uses: bazel-contrib/setup-bazel@0.19.0
         with:
           bazelisk-version: 1.26.0 # newest LTS before 1 Jun 2025
+          bazelisk-cache: true
+          repository-cache: true
+          disk-cache: true
+          cache-version: utils-test
+          # Restore on every run, but only write caches from pushes to main.
+          cache-save: ${{ github.event_name == 'push' }}
 
       - name: Check pip lock is up to date with score_tooling
         run: bazel test //:requirements_test

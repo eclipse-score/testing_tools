@@ -15,18 +15,26 @@ name: Build and test scenarios
 on:
   pull_request:
     types: [opened, reopened, synchronize]
+  push:
+    branches: [main]
 
 jobs:
   scenarios-build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Setup Bazel
-        uses: bazel-contrib/setup-bazel@0.15.0
+        uses: bazel-contrib/setup-bazel@0.19.0
         with:
           bazelisk-version: 1.26.0 # newest LTS before 1 Jun 2025
+          bazelisk-cache: true
+          repository-cache: true
+          disk-cache: true
+          cache-version: scenarios-build
+          # Restore on every run, but only write caches from pushes to main.
+          cache-save: ${{ github.event_name == 'push' }}
 
       - name: Run build
         run: |
@@ -37,22 +45,28 @@ jobs:
           bazel test //... --config=x86_64-linux
 
   clang-tidy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Setup Bazel
-        uses: bazel-contrib/setup-bazel@0.15.0
+        uses: bazel-contrib/setup-bazel@0.19.0
         with:
           bazelisk-version: 1.26.0
+          bazelisk-cache: true
+          repository-cache: true
+          disk-cache: true
+          cache-version: clang-tidy
+          # Restore on every run, but only write caches from pushes to main.
+          cache-save: ${{ github.event_name == 'push' }}
 
       - name: Run clang-tidy
         run: |
           bazel test --config=clang-tidy //score/test_scenarios_cpp:clang_tidy
 
   clippy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
