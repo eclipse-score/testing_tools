@@ -16,8 +16,10 @@ module(name = "score_test_scenarios")
 bazel_dep(name = "rules_python", version = "1.4.1")
 bazel_dep(name = "bazel_skylib", version = "1.7.1")
 bazel_dep(name = "rules_cc", version = "0.1.1")
+
 bazel_dep(name = "aspect_rules_lint", version = "2.5.0", dev_dependency = True)
 bazel_dep(name = "buildifier_prebuilt", version = "7.3.1", dev_dependency = True)
+
 bazel_dep(name = "platforms", version = "1.0.0")
 
 # S-CORE process rules
@@ -28,9 +30,8 @@ bazel_dep(name = "score_rust_policies", version = "0.0.5")
 # Toolchains and extensions
 bazel_dep(name = "rules_rust", version = "0.68.1-score")
 
-bazel_dep(name = "score_bazel_cpp_toolchains", version = "0.5.4", dev_dependency = True)
+bazel_dep(name = "score_bazel_cpp_toolchains", version = "1.0.3", dev_dependency = True)
 bazel_dep(name = "score_toolchains_rust", version = "0.10.0", dev_dependency = True)
-
 bazel_dep(name = "score_cpp_policies", version = "0.1.1", dev_dependency = True)
 bazel_dep(name = "toolchains_llvm", version = "1.8.0", dev_dependency = True)
 
