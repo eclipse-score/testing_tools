@@ -11,9 +11,18 @@
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
 load("@rules_python//python:pip.bzl", "compile_pip_requirements")
+load("@score_docs_as_code//:docs.bzl", "docs")
 load("@score_tooling//:defs.bzl", "setup_starpls")
 
 exports_files([".clang-tidy"])
+
+docs(
+    data = [
+        # "@score_platform//:needs_json",
+        # "@score_process//:needs_json",
+    ],
+    source_dir = "docs",
+)
 
 setup_starpls(
     name = "starpls_server",

@@ -72,6 +72,9 @@ instance/
 # Sphinx documentation
 docs/_build/
 
+# docs:incremental and docs:ide_support build artifacts
+/_build
+
 # PyBuilder
 .pybuilder/
 target/
@@ -179,4 +182,3 @@ bazel-bin
 bazel-out
 bazel-testing_tools
 bazel-testlogs
-MODULE.bazel.lock
