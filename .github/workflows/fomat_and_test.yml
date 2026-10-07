@@ -56,7 +56,7 @@ jobs:
           cache-save: ${{ github.event_name == 'push' }}
 
       - name: Check pip lock is up to date with score_tooling
-        run: bazel test //:requirements_test
+        run: bazel test //:requirements.test
 
       - name: Install Rust (Cargo)
         uses: actions-rs/toolchain@v1

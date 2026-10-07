@@ -25,7 +25,7 @@ compile_pip_requirements(
     name = "requirements",
     srcs = [
         "requirements.txt",
-        "@score_tooling//python_basics:requirements.txt",
+        "@score_tooling//python_basics:requirements_3_12.txt",
     ],
     extra_args = [
         "--no-annotate",
