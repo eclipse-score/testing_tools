@@ -11,7 +11,19 @@
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
 
+# Kept out of the library packages: linters.bzl loads dev-only deps
+# (score_cpp_policies, llvm_toolchain) that consumers of this module can't see.
+load(":linters.bzl", "clang_tidy_test")
+
 exports_files(
     ["linters.bzl"],
     visibility = ["//visibility:public"],
+)
+
+clang_tidy_test(
+    name = "clang_tidy",
+    srcs = [
+        "//score/test_scenarios_cpp",
+    ],
+    tags = ["manual"],
 )

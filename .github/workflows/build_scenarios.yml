@@ -63,7 +63,7 @@ jobs:
 
       - name: Run clang-tidy
         run: |
-          bazel test --config=clang-tidy //score/test_scenarios_cpp:clang_tidy
+          bazel test --config=clang-tidy //tools/lint:clang_tidy
 
   clippy:
     runs-on: ubuntu-24.04

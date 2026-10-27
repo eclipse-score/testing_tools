@@ -13,7 +13,6 @@
 load("@rules_cc//cc:cc_binary.bzl", "cc_binary")
 load("@rules_cc//cc:cc_library.bzl", "cc_library")
 load("@rules_cc//cc:cc_test.bzl", "cc_test")
-load("//tools/lint:linters.bzl", "clang_tidy_test")
 
 cc_library(
     name = "test_scenarios_cpp",
@@ -63,12 +62,4 @@ cc_test(
         ":test_scenarios_cpp",
         "@googletest//:gtest_main",
     ],
-)
-
-clang_tidy_test(
-    name = "clang_tidy",
-    srcs = [
-        ":test_scenarios_cpp",
-    ],
-    tags = ["manual"],
 )
