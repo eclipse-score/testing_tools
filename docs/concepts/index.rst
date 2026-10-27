@@ -18,35 +18,33 @@ Concepts
 Overview
 --------
 
-``testing_tools`` provides two things:
+The C++ and Rust test scenario libraries (``test_scenarios_cpp``, ``test_scenarios_rust``) let
+a module expose its integration and system test scenarios as one CLI binary. An external runner,
+such as pytest or ITF, calls that binary.
 
-- **Test scenario libraries** (``test_scenarios_cpp``, ``test_scenarios_rust``) — a small
-  framework for exposing a module's own integration/system test scenarios as a single CLI
-  binary, driven externally (e.g. by pytest or ITF).
-- **testing_utils** — a Python package of test-automation helpers: Bazel/Cargo build-tool
-  wrappers, a log container for structured log queries, and result-entry types for structured
-  test reports.
+``testing_utils`` is a Python package with Bazel and Cargo build-tool wrappers, a log container
+for structured log queries, and result-entry types for structured test reports.
 
 Test Scenarios
 ---------------
 
-- ``Scenario`` — a single named unit of work: ``name()`` identifies it, ``run(input)`` executes it.
-- ``ScenarioGroup`` / ``ScenarioGroupImpl`` — groups ``Scenario``\\ s (and nested
-  ``ScenarioGroup``\\ s) under a name. Nesting produces dotted names, e.g. ``list.enumerate``.
-- ``TestContext`` — wraps a root ``ScenarioGroup``; runs a scenario by its dotted name, or lists
-  all of them recursively.
-- ``run_cli_app`` — a ready-made CLI frontend over a ``TestContext``, providing
-  ``--list-scenarios``, ``--name``, ``--input``, and ``--help`` for free.
+- ``Scenario``: a named unit of work. ``name()`` returns the name and ``run(input)`` executes it.
+- ``ScenarioGroup`` / ``ScenarioGroupImpl``: groups ``Scenario``\ s and nested
+  ``ScenarioGroup``\ s under a name. Nesting produces dotted names, for example ``list.enumerate``.
+- ``TestContext``: wraps a root ``ScenarioGroup``. It runs a scenario by its dotted name or lists
+  all scenarios recursively.
+- ``run_cli_app``: a CLI frontend over a ``TestContext`` with the options ``--list-scenarios``,
+  ``--name``, ``--input`` and ``--help``.
 
 Testing Utils
 -------------
 
-A Python package (``testing_utils``) providing:
+``testing_utils`` contains:
 
-- Build tool helpers — Bazel/Cargo metadata queries, target path lookup
-- ``LogContainer`` and ``ResultEntry`` — structured storage and querying of test log entries
-- ``Scenario`` / ``ScenarioGroup`` / ``run_cli_app`` — the Python-side equivalents of the C++/Rust
-  concepts above
+- Build tool helpers: Bazel and Cargo metadata queries, target path lookup
+- ``LogContainer`` and ``ResultEntry``: storage and queries for test log entries
+- ``Scenario`` / ``ScenarioGroup`` / ``run_cli_app``: Python versions of the C++ and Rust types
+  above
 
 See the top-level `README <https://github.com/eclipse-score/testing_tools#readme>`_ for
 installation and detailed API usage.

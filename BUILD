@@ -17,10 +17,7 @@ load("@score_tooling//:defs.bzl", "setup_starpls")
 exports_files([".clang-tidy"])
 
 docs(
-    data = [
-        # "@score_platform//:needs_json",
-        # "@score_process//:needs_json",
-    ],
+    data = [],
     source_dir = "docs",
 )
 

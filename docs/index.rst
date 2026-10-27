@@ -15,8 +15,8 @@
 Test Scenarios
 =============================
 
-This documentation describes **testing_tools** — test framework tools and helpers for building
-test-scenario CLI binaries and processing test results.
+``Test scenarios`` contains tools and helpers for building test-scenario CLI binaries and
+processing test results.
 
 .. toctree::
    :maxdepth: 2

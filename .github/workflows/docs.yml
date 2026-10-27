@@ -11,19 +11,15 @@
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
 
-name: Documentation CI
+name: Documentation
 
 on:
   pull_request:
   push:
     branches:
       - main
-    tags:
-      - "v*"
   release:
-    types: [published]
-  merge_group:
-    types: [checks_requested]
+    types: [created]
 
 jobs:
   build-docs:

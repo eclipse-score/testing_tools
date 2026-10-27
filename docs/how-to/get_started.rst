@@ -20,14 +20,14 @@ Add the library as a Bazel dependency:
 .. code-block:: python
 
    # C++
-   deps = ["@score_test_scenarios//test_scenarios_cpp"]
+   deps = ["@score_test_scenarios//score/test_scenarios_cpp"]
 
    # Rust
-   deps = ["@score_test_scenarios//test_scenarios_rust"]
+   deps = ["@score_test_scenarios//score/test_scenarios_rust"]
 
-Define scenarios, group them, and run them through ``TestContext``/``run_cli_app``. For a
-complete, runnable walkthrough — including JSON input parsing and structured tracing with a
-monotonic clock — see the ``basic`` example:
+Define scenarios, group them, and run them through ``TestContext``/``run_cli_app``. The
+``basic`` example shows the full flow, including JSON input parsing and structured tracing with a
+monotonic clock:
 
 - C++: ``score/test_scenarios_cpp/examples/basic.cpp``, run with
   ``bazel run //examples:cpp_basic``
