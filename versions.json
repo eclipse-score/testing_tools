@@ -26,5 +26,9 @@
   {
     "version": "pr-44",
     "url": "https://eclipse-score.github.io/testing_tools/pr-44/"
+  },
+  {
+    "version": "pr-45",
+    "url": "https://eclipse-score.github.io/testing_tools/pr-45/"
   }
 ]
