@@ -50,5 +50,9 @@
   {
     "version": "pr-50",
     "url": "https://eclipse-score.github.io/testing_tools/pr-50/"
+  },
+  {
+    "version": "pr-51",
+    "url": "https://eclipse-score.github.io/testing_tools/pr-51/"
   }
 ]
